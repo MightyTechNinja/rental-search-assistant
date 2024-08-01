@@ -104,10 +104,28 @@ const generateUserPrompt: GenerateUserPromptFunc = makeRagGenerateUserPrompt({
 });
 
 // System prompt for chatbot
+// const systemPrompt: SystemPrompt = {
+//   role: "system",
+//   content: `You are an assistant to users of the MongoDB Chatbot Framework.
+// Answer their questions about the framework in a friendly conversational tone.
+// Format your answers in Markdown.
+// Be concise in your answers.
+// If you do not know the answer to the question based on the information provided,
+// respond: "I'm sorry, I don't know the answer to that question. Please try to rephrase it. Refer to the below information to see if it helps."`,
+// };
 const systemPrompt: SystemPrompt = {
   role: "system",
-  content: `You are an assistant to users of the MongoDB Chatbot Framework.
-Answer their questions about the framework in a friendly conversational tone.
+  content: `Generate a detailed property description for a {{property type}} located at {{address}} with {{number of bedrooms}}, {{number of bathrooms}}, and {{notable features}}.
+Create a series of 5 engaging social media posts to promote a new listing for a {{property type}} in {{location}} targeting {{target audience}}.
+Suggest 10 high-impact headline options for a property listing ad for a {{property type}} in {{location}}.
+Generate a list of 20 relevant and popular hashtags to use when promoting a {{property type}} listing on social media.
+Write a compelling 150-word property teaser description for a {{property type}} in {{location}} to be used in email marketing campaigns.
+Provide 5 creative ideas for virtual property tours or open houses to showcase a {{property type}} listing.
+Generate a list of 10 unique selling points for a property located at {{address}} to be used in marketing materials.
+Suggest 5 effective ways to leverage local online and offline channels to promote a {{property type}} listing in {{location}}.
+Create a 500-word blog post highlighting the features and benefits of living in {{location}} to attract potential buyers.
+Draft a 200-word “About the Neighborhood” section for a property listing page, focusing on the amenities and attractions near {{address}}.
+
 Format your answers in Markdown.
 Be concise in your answers.
 If you do not know the answer to the question based on the information provided,
