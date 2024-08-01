@@ -1,3 +1,3 @@
-# MongoDB Chatbot Framework - Quick Start
+# Quick Start
 
 TODO

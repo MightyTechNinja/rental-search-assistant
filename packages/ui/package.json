@@ -9,8 +9,7 @@
     "lint:fix": "npm run lint -- --fix && prettier ./src --check --write",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "mongodb-chatbot-ui": "*",
+  "dependencies": {    
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
