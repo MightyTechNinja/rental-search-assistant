@@ -1,15 +1,13 @@
 import axios from "axios";
+import express from "express";
+import bodyParser from "body-parser";
 
 import { addEmbedding, changeEmbedding, deleteUrl, search } from "./db";
 // import { urlExists } from "./redis";
 import { isValidUrl } from "./util";
 import { ingest_url, ingest_md } from "./ingest";
 
-const {
-  API_TOKEN,
-  OPENAI_API_KEY,
-  OPENAI_EMBEDDING_MODEL,
-} = process.env;
+const { API_TOKEN, OPENAI_API_KEY, OPENAI_EMBEDDING_MODEL } = process.env;
 
 function checkAuth(req: Request) {
   const authorizationHeader = req.headers.get("Authorization");
@@ -18,17 +16,20 @@ function checkAuth(req: Request) {
   }
 }
 
-export async function handleRequest(req: Request): Promise<Response> {
-  const path = new URL(req.url).pathname;
-  const { method } = req;
+const app = express();
+app.use(bodyParser.json());
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 
-  let authResponse = checkAuth(req);
-  if (authResponse) {
-    return authResponse;
-  }
+app.get("/", (req, res) => {
+  res.json({ message: "ok" });
+});
 
-  if (path === "/api/vector/search" && method === "POST") {
-    const { query, userId } = await req.json();
+app.post("/api/vector/search", async (req, res) => {
+  const { query, userId } = await req.json();
     try {
       const result = await search(query, userId);
       return Response.json(result);
@@ -53,10 +54,10 @@ export async function handleRequest(req: Request): Promise<Response> {
       if (errorMessage)
         return Response.json("Failed to search", { status: 500 });
     }
-  }
+})
 
-  if (path === "/api/vector/callback" && method === "POST") {
-    const { url, userId } = await req.json();
+app.post("/api/vector/callback", async (req, res) => {
+  const { url, userId } = await req.json();
     console.log("url", url, "userId", userId);
     try {
       if (!isValidUrl(url)) {
@@ -73,10 +74,10 @@ export async function handleRequest(req: Request): Promise<Response> {
       console.log("index", error as Error);
       return Response.json("Failed to search", { status: 500 });
     }
-  }
+})
 
-  if (path === "/api/index/md" && method === "POST") {
-    const { url, userId, markdown, title } = await req.json();
+app.post("/api/index/md", async (req, res) => {
+  const { url, userId, markdown, title } = await req.json();
     try {
       if (!isValidUrl(url)) {
         return Response.json("Invalid URL format", { status: 400 });
@@ -103,29 +104,16 @@ export async function handleRequest(req: Request): Promise<Response> {
       console.log("index-md", error as Error);
       return Response.json("Failed to index markdown", { status: 500 });
     }
-  }
+})
 
-  if (path === "/api/vector/change-embedding" && method === "POST") {
-    const { userId } = await req.json();
-    try {
-      await changeEmbedding(userId);
-      return Response.json("Success");
-    } catch (error) {
-      console.log("change-embedding", error as Error);
-      return Response.json("Failed to change embedding", { status: 500 });
-    }
-  }
-
-  if(path === "/api/vector/embedding" && method === "POST"){
-    
-
-    const { properties } = await req.json();
+app.post("/api/vector/embedding", async (req, res) => {
+  const { properties } = await req.json();
     properties.forEach(async (property: any) => {
       const { title, description, introduction, location, review } = property; // document
-  
+
       // Prepare text for embedding (combine or process fields as needed)
       const textToEmbed = `Title: ${title}\nDescription: ${description}\nIntroduction: ${introduction}\nLocation: ${location}\nReview: ${review}`;
-  
+
       try {
         const response = await axios.post(
           `https://api.openai.com/v1/embeddings`,
@@ -140,24 +128,45 @@ export async function handleRequest(req: Request): Promise<Response> {
             },
           }
         );
-    
+
         const embedding = response.data.data[0].embedding;
-        await addEmbedding({...property, embedding});
-        
-        console.log(`A document was inserted with the _id: ${result.insertedId}`);
+        const result = await addEmbedding({ ...property, embedding });
+
+        console.log(
+          `A document was inserted with the _id: ${result.insertedId}`
+        );
       } catch (error) {
         console.error("Error processing:", error);
       }
       return;
     });
-  }
+})
 
-  if (path === "/") return Response.json("Welcome to memfree vector service!");
-  return Response.json("Page not found", { status: 404 });
-}
-const server = Bun.serve({
-  port: process.env.PORT || 3000,
-  fetch: handleRequest,
+app.post("/api/vector/change-embedding", async (req, res) => {
+  const { userId } = await req.json();
+    try {
+      await changeEmbedding(userId);
+      return Response.json("Success");
+    } catch (error) {
+      console.log("change-embedding", error as Error);
+      return Response.json("Failed to change embedding", { status: 500 });
+    }
+})
+
+// @ts-ignore
+app.use((req, res, next) => {
+  checkAuth(req);
+  next()
+});
+// @ts-ignore
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  console.error(err.message, err.stack);
+  res.status(statusCode).json({ message: err.message });
+  return;
 });
 
-console.log(`Listening on ${server.url}`);
+const port = 3000;
+app.listen(port, '0.0.0.0', () => {
+  console.log(`App listening at http://localhost:${port}`)
+});

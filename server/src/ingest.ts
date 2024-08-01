@@ -1,9 +1,9 @@
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { Document } from "@langchain/core/documents";
 
-import { append } from "./db";
-import { getMd } from "./util";
+// import { append } from "./db";
 // import { addUrl } from "./redis";
+import { getMd } from "./util";
 import { TABLE_COMPACT_THRESHOLD } from "./config";
 import { getEmbedding } from "./embedding";
 import { processTweet } from "./tweet";
@@ -41,7 +41,7 @@ async function processIngestion(
   console.timeEnd("addVectors");
 
   console.time("append");
-  const table = await append(userId, data);
+  // const table = await append(userId, data);
   console.timeEnd("append");
 
   // const indexCount = await addUrl(userId, url);
