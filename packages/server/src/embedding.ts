@@ -1,6 +1,6 @@
 import { type EmbeddingsInterface } from "@langchain/core/embeddings";
 import { OpenAIEmbeddings } from "@langchain/openai";
-import { DIMENSIONS, EMBEDDING_MODEL } from "../config";
+import { DIMENSIONS, EMBEDDING_MODEL } from "./config";
 
 export function getEmbedding(): EmbeddingsInterface {
   return new OpenAIEmbeddings({

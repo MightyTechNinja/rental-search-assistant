@@ -1,5 +1,5 @@
 {
-  "name": "embedding",
+  "name": "rental-search-assistant-server",
   "version": "0.0.0",
   "description": "",
   "scripts": {
@@ -12,7 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "@langchain/openai": "^0.2.5",
-    "axios": "^1.7.2"
+    "@langchain/textsplitters": "^0.0.2",
+    "axios": "^1.7.2",
+    "mongodb": "^6.3.0",
+    "react-tweet": "^3.2.1"
   },
   "devDependencies": {
     "dotenv": "^16.3.1",

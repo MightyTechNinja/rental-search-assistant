@@ -1,10 +1,16 @@
-import { changeEmbedding, deleteUrl, search } from "./db";
-import { logError } from "./log";
-import { urlExists } from "./redis";
+import axios from "axios";
+
+import { addEmbedding, changeEmbedding, deleteUrl, search } from "./db";
+// import { urlExists } from "./redis";
 import { isValidUrl } from "./util";
 import { ingest_url, ingest_md } from "./ingest";
 
-const API_TOKEN = process.env.API_TOKEN!;
+const {
+  API_TOKEN,
+  OPENAI_API_KEY,
+  OPENAI_EMBEDDING_MODEL,
+} = process.env;
+
 function checkAuth(req: Request) {
   const authorizationHeader = req.headers.get("Authorization");
   if (!authorizationHeader || authorizationHeader !== `${API_TOKEN}`) {
@@ -43,7 +49,7 @@ export async function handleRequest(req: Request): Promise<Response> {
         return new Response(JSON.stringify([]), { status: 200 });
       }
 
-      logError(errorMessage || "unkown", "search");
+      console.log("search", errorMessage || "unkown");
       if (errorMessage)
         return Response.json("Failed to search", { status: 500 });
     }
@@ -56,15 +62,15 @@ export async function handleRequest(req: Request): Promise<Response> {
       if (!isValidUrl(url)) {
         return Response.json("Invalid URL format", { status: 400 });
       }
-      if (await urlExists(userId, url)) {
-        console.log("url", url, "already exists for user", userId, "deleting");
-        await deleteUrl(userId, url);
-        console.log("url", url, "already exists for user", userId, "deleted");
-      }
+      // if (await urlExists(userId, url)) {
+      //   console.log("url", url, "already exists for user", userId, "deleting");
+      //   await deleteUrl(userId, url);
+      //   console.log("url", url, "already exists for user", userId, "deleted");
+      // }
       await ingest_url(url, userId);
       return Response.json("Success");
     } catch (error) {
-      logError(error as Error, "index");
+      console.log("index", error as Error);
       return Response.json("Failed to search", { status: 500 });
     }
   }
@@ -94,7 +100,7 @@ export async function handleRequest(req: Request): Promise<Response> {
       await ingest_md(url, userId, markdown, title);
       return Response.json("Success");
     } catch (error) {
-      logError(error as Error, "index-md");
+      console.log("index-md", error as Error);
       return Response.json("Failed to index markdown", { status: 500 });
     }
   }
@@ -105,9 +111,45 @@ export async function handleRequest(req: Request): Promise<Response> {
       await changeEmbedding(userId);
       return Response.json("Success");
     } catch (error) {
-      logError(error as Error, "change-embedding");
+      console.log("change-embedding", error as Error);
       return Response.json("Failed to change embedding", { status: 500 });
     }
+  }
+
+  if(path === "/api/vector/embedding" && method === "POST"){
+    
+
+    const { properties } = await req.json();
+    properties.forEach(async (property: any) => {
+      const { title, description, introduction, location, review } = property; // document
+  
+      // Prepare text for embedding (combine or process fields as needed)
+      const textToEmbed = `Title: ${title}\nDescription: ${description}\nIntroduction: ${introduction}\nLocation: ${location}\nReview: ${review}`;
+  
+      try {
+        const response = await axios.post(
+          `https://api.openai.com/v1/embeddings`,
+          {
+            input: textToEmbed,
+            model: OPENAI_EMBEDDING_MODEL,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${OPENAI_API_KEY}`,
+            },
+          }
+        );
+    
+        const embedding = response.data.data[0].embedding;
+        await addEmbedding({...property, embedding});
+        
+        console.log(`A document was inserted with the _id: ${result.insertedId}`);
+      } catch (error) {
+        console.error("Error processing:", error);
+      }
+      return;
+    });
   }
 
   if (path === "/") return Response.json("Welcome to memfree vector service!");
