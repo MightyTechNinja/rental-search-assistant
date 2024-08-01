@@ -1,1 +1,1 @@
-# mongodb-chatbot-search-assistant
+# conversational-search-assistant-for-rental-properties
