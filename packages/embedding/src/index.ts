@@ -1,12 +1,17 @@
 import path from "path";
-import fs from "fs";
 import axios from "axios";
+import { MongoClient } from "mongodb";
 import { loadEnvVars } from "./loadEnvVars";
 import { properties } from "./properties";
 
 // Load project environment variables
 const dotenvPath = path.join(__dirname, "..", "..", "..", ".env"); // .env at project root
-const { OPENAI_API_KEY, OPENAI_EMBEDDING_MODEL } = loadEnvVars(dotenvPath);
+const {
+  MONGODB_CONNECTION_URI,
+  MONGODB_DATABASE_NAME,
+  OPENAI_API_KEY,
+  OPENAI_EMBEDDING_MODEL,
+} = loadEnvVars(dotenvPath);
 
 async function generateEmbedding(text: string): Promise<number[]> {
   try {
@@ -34,30 +39,28 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 async function processDocument(document: any) {
-  const propertiesWithEmbedding: any[] = [];
-  properties.forEach(async (property, index) => {
-    const { title, description, introduction, location, reviews } = property; // document
+  const client = new MongoClient(MONGODB_CONNECTION_URI);
+  const database = client.db(MONGODB_DATABASE_NAME);
 
-    const review = reviews.join("\n");
+  properties.forEach(async (property, index) => {
+    const { title, description, introduction, location, review } = property; // document
 
     // Prepare text for embedding (combine or process fields as needed)
     const textToEmbed = `Title: ${title}\nDescription: ${description}\nIntroduction: ${introduction}\nLocation: ${location}\nReview: ${review}`;
 
     try {
       const embedding = await generateEmbedding(textToEmbed);
-      propertiesWithEmbedding.push({ ...property, embedding });
+
+      const collection = database.collection<any>("embedded_content");
+      const result = await collection.insertOne({
+        ...property,
+        embedding,
+      });
+      console.log(`A document was inserted with the _id: ${result.insertedId}`);
     } catch (error) {
       console.error("Error processing document:", error);
     }
-
-    if (index === properties.length - 1) {
-      fs.writeFile(
-        "propertiesWithEmbedding.json",
-        JSON.stringify(propertiesWithEmbedding),
-        "utf8",
-        () => {}
-      );
-    }
+    return;
   });
 }
 

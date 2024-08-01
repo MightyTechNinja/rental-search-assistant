@@ -1,3 +1,5 @@
+import path from "path";
+import { OpenAIClient, OpenAIKeyCredential } from "@azure/openai";
 import {
   MongoClient,
   makeMongoDbEmbeddedContentStore,
@@ -12,10 +14,8 @@ import {
   makeApp,
   GenerateUserPromptFunc,
   makeRagGenerateUserPrompt,
-  MakeUserMessageFunc,
+  MakeUserMessageFunc,  
 } from "mongodb-chatbot-server";
-import { OpenAIClient, OpenAIKeyCredential } from "@azure/openai";
-import path from "path";
 import { loadEnvVars } from "./loadEnvVars";
 
 // Load project environment variables
@@ -78,28 +78,50 @@ const findContent = makeDefaultFindContent({
   },
 });
 
+// const mongoDbUserQueryPreprocessor = makePreprocessMongoDbUserQuery({
+//   azureOpenAiServiceConfig: {
+//     apiKey: OPENAI_API_KEY,
+//     baseUrl: "https://lega-aoai-gpt4.openai.azure.com",
+//     deployment: OPENAI_CHAT_COMPLETION_MODEL,
+//     version: "2023-05-15",
+//   },
+//   numRetries: 0,
+//   retryDelayMs: 5000,
+// });
+
 // Constructs the user message sent to the LLM from the initial user message
 // and the content found by the findContent function.
-const makeUserMessage: MakeUserMessageFunc = async function ({
-  content,
+export const makeUserMessage: MakeUserMessageFunc = async function ({
+  preprocessedUserMessage,
   originalUserMessage,
-}): Promise<OpenAiChatMessage & { role: "user" }> {
+  content,
+  queryEmbedding,
+}) {
   const chunkSeparator = "~~~~~~";
   const context = content.map((c) => c.text).join(`\n${chunkSeparator}\n`);
-  const contentForLlm = `Using the following information, answer the user query.
+  const contentForLlm = `Using the following information, answer the question.
 Different pieces of information are separated by "${chunkSeparator}".
 
-Information:
+<Information>
 ${context}
+<End information>
 
-
-User query: ${originalUserMessage}`;
-  return { role: "user", content: contentForLlm };
+<Question>
+${preprocessedUserMessage ?? originalUserMessage}
+<End Question>`;
+  return {
+    role: "user",
+    content: originalUserMessage,
+    embedding: queryEmbedding,
+    preprocessedContent: preprocessedUserMessage,
+    contentForLlm,
+  };
 };
 
 // Generates the user prompt for the chatbot using RAG
 const generateUserPrompt: GenerateUserPromptFunc = makeRagGenerateUserPrompt({
   findContent,
+  // queryPreprocessor: mongoDbUserQueryPreprocessor,  
   makeUserMessage,
 });
 
@@ -115,17 +137,8 @@ const generateUserPrompt: GenerateUserPromptFunc = makeRagGenerateUserPrompt({
 // };
 const systemPrompt: SystemPrompt = {
   role: "system",
-  content: `Generate a detailed property description for a {{property type}} located at {{address}} with {{number of bedrooms}}, {{number of bathrooms}}, and {{notable features}}.
-Create a series of 5 engaging social media posts to promote a new listing for a {{property type}} in {{location}} targeting {{target audience}}.
-Suggest 10 high-impact headline options for a property listing ad for a {{property type}} in {{location}}.
-Generate a list of 20 relevant and popular hashtags to use when promoting a {{property type}} listing on social media.
-Write a compelling 150-word property teaser description for a {{property type}} in {{location}} to be used in email marketing campaigns.
-Provide 5 creative ideas for virtual property tours or open houses to showcase a {{property type}} listing.
-Generate a list of 10 unique selling points for a property located at {{address}} to be used in marketing materials.
-Suggest 5 effective ways to leverage local online and offline channels to promote a {{property type}} listing in {{location}}.
-Create a 500-word blog post highlighting the features and benefits of living in {{location}} to attract potential buyers.
-Draft a 200-word “About the Neighborhood” section for a property listing page, focusing on the amenities and attractions near {{address}}.
-
+  content: `You are an assistant for users to search properties.
+Answer their questions about the rental in a friendly conversational tone.
 Format your answers in Markdown.
 Be concise in your answers.
 If you do not know the answer to the question based on the information provided,

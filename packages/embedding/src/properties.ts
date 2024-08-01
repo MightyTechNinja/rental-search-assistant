@@ -339,10 +339,7 @@ export const properties = [
             "totalCount": 1,
             "__typename": "PropertyImages"
         },
-        "reviews": [
-            "We loved staying at this property. The cottage is very cute and has everything you need. The customer service was above and beyond. They took excellent care of us",
-            "Looks exactly as pictured. So cute, quiet and in walkable neighborhood. Great grocery store less than a block away. House was stocked with everything youd need. Washer and dryer was super handy too. Will stay the next time Im in Bend!"
-        ]
+        "review": "We loved staying at this property. The cottage is very cute and has everything you need. The customer service was above and beyond. They took excellent care of us",
     },
     {
         "id": "660acaa9a4a9a97b69748f97",
@@ -669,9 +666,6 @@ export const properties = [
             "totalCount": 1,
             "__typename": "PropertyImages"
         },
-        "reviews": [
-            "We had an excellent stay! The communication was awesome and checking in was a breeze. The home was walkable to downtown and super comfortable when we were inside during the cold and snowy weather. The kitchen had everything we needed and we felt super relaxed. A great stay!",
-            "The Bluebird House is the perfect place to relax, recharge, and enjoy!"
-        ]
+        "review": "The Bluebird House is the perfect place to relax, recharge, and enjoy!"
     }    
 ]
