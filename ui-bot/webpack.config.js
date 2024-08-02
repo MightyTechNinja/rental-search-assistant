@@ -218,7 +218,7 @@ function botonicDevConfig(mode) {
         IS_NODE: false,
         HUBTYPE_API_URL: JSON.stringify(process.env.HUBTYPE_API_URL),
         ...(mode === 'development'
-          ? { MODELS_BASE_URL: JSON.stringify('http://localhost:8080') }
+          ? { MODELS_BASE_URL: JSON.stringify('http://localhost:3000') }
           : {}),
       }),
       new webpack.ProvidePlugin({

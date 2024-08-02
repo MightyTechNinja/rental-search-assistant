@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "build": "webpack --env target=all --mode=production",
-    "start": "webpack serve --env target=dev --mode=development",
+    "start": "webpack serve --env target=dev --mode=development --port 3000",
     "test": "jest",
     "train:ner": "ts-node src/nlp/tasks/ner/train.ts",
     "train:intent-classification": "ts-node src/nlp/tasks/intent-classification/train.ts"

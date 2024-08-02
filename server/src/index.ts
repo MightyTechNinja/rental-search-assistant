@@ -163,7 +163,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 // app listening
-const port = 3000;
+const port = 8080;
 app.listen(port, "0.0.0.0", () => {
   console.log(`App listening at http://localhost:${port}`);
 });
