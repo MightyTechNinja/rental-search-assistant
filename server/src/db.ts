@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+import { resolve } from 'path';
 import { MongoClient } from "mongodb";
 import {
   Schema,
@@ -9,6 +11,8 @@ import {
 } from "apache-arrow";
 import { DIMENSIONS } from "./config";
 import { getEmbedding } from "./embedding";
+
+dotenv.config({path: resolve(`${__dirname}/../.env`)});
 
 const {
   API_TOKEN,

@@ -1,27 +1,61 @@
 {
   "name": "rental-search-assistant-server",
-  "version": "0.0.0",
-  "description": "",
+  "version": "1.0.14",
+  "description": "An Express boilerplate backend",
+  "license": "MIT",
+  "main": "index.ts",
+  "private": true,
   "scripts": {
-    "build": "tsc",
-    "start": "node build/index.js",
-    "dev": "nodemon src/index.ts"
+    "dev": "tsx watch --clear-screen=false src/index.ts | pino-pretty",
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "clean": "rimraf dist coverage",
+    "lint": "biome check src/",
+    "lint:fix": "biome check src/ --fix",
+    "format": "biome format src/",
+    "test": "vitest run",
+    "prepare": "husky"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@langchain/openai": "^0.2.5",
     "@langchain/textsplitters": "^0.0.2",
     "apache-arrow": "^17.0.0",
-    "axios": "^1.7.2",
+    "axios": "^1.7.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "envalid": "^8.0.0",
     "express": "^4.19.2",
-    "mongodb": "^6.3.0",
+    "express-rate-limit": "^7.2.0",
+    "helmet": "^7.1.0",
+    "mongodb": "^6.8.0",
     "react-tweet": "^3.2.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
-    "dotenv": "^16.3.1",
-    "typescript": "^5.3.3"
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "rimraf": "^6.0.0",
+    "tsup": "^8.0.2",
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.4",
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "^2.0.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,json,jsonc}": [
+      "biome check --apply --no-errors-on-unmatched"
+    ]
+  },
+  "tsup": {
+    "entry": [
+      "src",
+      "!src/**/__tests__/**",
+      "!src/**/*.test.*"
+    ],
+    "splitting": false,
+    "sourcemap": true,
+    "clean": true
   }
 }
