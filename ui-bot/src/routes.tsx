@@ -11,7 +11,7 @@ import Bye from "./actions/Bye";
 import MoreHelp from "./actions/MoreHelp";
 
 export const routes: Route[] = [
-  { path: "/", text: "hi", action: Start },
+  { path: "/", text: /^hi$/i, action: Start },
 
   // intent
   {
@@ -21,8 +21,7 @@ export const routes: Route[] = [
   },
   { path: "book-restaurant", intent: "BookRestaurant", action: BookRestaurant },
 
-  // booking
-  { path: "start", text: /^start$/i, action: Start },
+  // booking  
   {
     path: "book-hotel",
     payload: /hotel-.*/,

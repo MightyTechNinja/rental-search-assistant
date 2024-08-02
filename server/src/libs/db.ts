@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { resolve } from 'path';
+import { resolve } from "path";
 import { MongoClient } from "mongodb";
 import {
   Schema,
@@ -9,10 +9,10 @@ import {
   Utf8,
   Float64,
 } from "apache-arrow";
-import { DIMENSIONS } from "./config";
-import { getEmbedding } from "./embedding";
+import { DIMENSIONS } from "../config";
+import { getEmbedding } from "./util";
 
-dotenv.config({path: resolve(`${__dirname}/../.env`)});
+dotenv.config({ path: resolve(`${__dirname}/../../.env`) });
 
 const {
   API_TOKEN,
@@ -69,6 +69,7 @@ export async function search(query: string, table: string) {
   //   .toArray();
   // console.timeEnd("search");
   // return results;
+  return { query, table };
 }
 
 interface Document {
@@ -87,7 +88,6 @@ export async function addEmbedding(property: any) {
 export async function changeEmbedding(tableName: string) {
   // const db = await getConnection();
   // const table = await getTable(db, tableName);
-
   // console.time("select-text");
   // const documents: Document[] = (await table
   //   .query()
@@ -95,27 +95,21 @@ export async function changeEmbedding(tableName: string) {
   //   .toArray()) as Document[];
   // console.timeEnd("select-text");
   // console.log("Embedding", documents.length);
-
   // const texts = documents.map((item) => item.text);
-
   // console.time("embedding");
   // const embeddings = await getEmbedding().embedDocuments(texts);
   // console.timeEnd("embedding");
-
   // const documentsWithVectors = documents.map((doc, i) => ({
   //   ...doc,
   //   vector: embeddings[i] as number[],
   // }));
-
   // console.time("createTable");
   // const newTable = await db.createTable(tableName, documentsWithVectors, {
   //   mode: "overwrite",
   //   schema: schema,
   // });
   // console.timeEnd("createTable");
-
   // console.log("Table size", await newTable.countRows());
-
   // await newTable.optimize({ cleanupOlderThan: new Date() });
   // return newTable;
 }

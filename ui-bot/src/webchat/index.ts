@@ -6,6 +6,11 @@ import Resortifi from "../assets/resortifi.png";
 
 export const webchat: WebchatAppArgs = {
   theme: {
+    style: {
+      position: "relative",
+      width: "50%",
+      height: "80%",
+    },
     header: {
       title: "Resortifi",
     },
@@ -16,12 +21,16 @@ export const webchat: WebchatAppArgs = {
       image: Chatbot,
       style: {
         position: "relative",
+        display: "none"
       },
     },
-    style: {
-      position: "relative",
-      width: "50%",
-      height: "80%",
-    },
+    userInput: {
+      emojiPicker: true as any
+    }
+  },
+  onInit: app => {
+    // You can combine webchat listeners with the Webchat SDK's Api in order
+    // to obtain extra functionalities. This will open automatically the webchat.
+    app.open()
   },
 };

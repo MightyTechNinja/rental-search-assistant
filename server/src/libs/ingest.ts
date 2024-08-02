@@ -3,9 +3,8 @@ import { Document } from "@langchain/core/documents";
 
 // import { append } from "./db";
 // import { addUrl } from "./redis";
-import { getMd } from "./util";
-import { TABLE_COMPACT_THRESHOLD } from "./config";
-import { getEmbedding } from "./embedding";
+import { getEmbedding, getMd } from "./util";
+import { TABLE_COMPACT_THRESHOLD } from "../config";
 import { processTweet } from "./tweet";
 
 const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {

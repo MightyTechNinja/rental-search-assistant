@@ -12,16 +12,17 @@ export default class extends React.Component {
     return (
       <>
         <Text>
-          Hi human, I'm your virtual assistant of Resortifi Platform. I will
+          Hi 🙂, I'm your virtual assistant of Resortifi Platform. I will
           help you manage your property reservations and much more.
         </Text>
         <Text>
-          Select an option:
-          <Button payload="carousel">Book a property</Button>
-          <Button webview={CheckReservationsWebview}>
+          Select Properties:
+          <Button payload="carousel">By Location</Button>
+          <Button payload="carousel">By Availability</Button>
+          {/* <Button webview={CheckReservationsWebview}>
             Check your reservations
-          </Button>
-        </Text>
+          </Button> */}
+        </Text>        
       </>
     );
   }
