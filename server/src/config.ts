@@ -1,6 +1,6 @@
-export const DIMENSIONS = 384;
+// export const DIMENSIONS = 384;
 export const TABLE_COMPACT_THRESHOLD = 50;
-export const EMBEDDING_MODEL = "text-embedding-3-large";
+export const EMBEDDING_MODEL = "text-embedding-ada-002";
 
 export const NODE_ENV = "development";
 export const HOST = "localhost";

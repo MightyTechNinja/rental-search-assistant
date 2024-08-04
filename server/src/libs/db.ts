@@ -9,7 +9,7 @@ import {
   Utf8,
   Float64,
 } from "apache-arrow";
-import { DIMENSIONS } from "../config";
+// import { DIMENSIONS } from "../config";
 import { getEmbedding } from "./util";
 
 dotenv.config({ path: resolve(`${__dirname}/../../.env`) });
@@ -26,18 +26,18 @@ const {
 const client = new MongoClient(MONGODB_CONNECTION_URI);
 const database = client.db(MONGODB_DATABASE_NAME);
 
-const schema = new Schema([
-  new Field("create_time", new Float64(), true),
-  new Field("title", new Utf8(), true),
-  new Field("url", new Utf8(), true),
-  new Field("image", new Utf8(), true),
-  new Field("text", new Utf8(), true),
-  new Field(
-    "vector",
-    new FixedSizeList(DIMENSIONS, new Field("item", new Float32())),
-    true
-  ),
-]);
+// const schema = new Schema([
+//   new Field("create_time", new Float64(), true),
+//   new Field("title", new Utf8(), true),
+//   new Field("url", new Utf8(), true),
+//   new Field("image", new Utf8(), true),
+//   new Field("text", new Utf8(), true),
+//   new Field(
+//     "vector",
+//     new FixedSizeList(DIMENSIONS, new Field("item", new Float32())),
+//     true
+//   ),
+// ]);
 
 export async function deleteUrl(tableName: string, url: string) {
   // const db = await getConnection();
@@ -56,9 +56,10 @@ export async function search(query: string, table: string) {
   // const db = await getConnection();
   // const tbl = await db.openTable(table);
 
-  // console.time("embedding");
-  // const query_embedding = await getEmbedding().embedQuery(query);
-  // console.timeEnd("embedding");
+  console.time("embedding");
+  const query_embedding = await getEmbedding().embedQuery(query);
+  console.timeEnd("embedding");
+  // console.log('query_embedding==', query_embedding);
 
   // console.time("search");
   // const results = await tbl
@@ -69,7 +70,31 @@ export async function search(query: string, table: string) {
   //   .toArray();
   // console.timeEnd("search");
   // return results;
-  return { query, table };
+
+  const collection = database.collection("embedded_content");
+  const agg = [
+    {
+      $vectorSearch: {
+        index: "vector_index",
+        path: "embedding",
+        queryVector: query_embedding,
+        numCandidates: 150,
+        limit: 10,
+      },
+    },
+    // {
+    //   $project: {
+    //     score: {
+    //       $meta: "vectorSearchScore",
+    //     },
+    //   },
+    // },
+  ];
+  
+  const result = collection.aggregate(agg);
+  await result.forEach((doc) => console.dir(JSON.stringify(doc)));
+  
+  return result;
 }
 
 interface Document {
