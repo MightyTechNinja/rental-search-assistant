@@ -4,9 +4,9 @@ import { search } from "../../libs/db";
 export const searchRouter: Router = express.Router();
 
 searchRouter.post("/", async (req: Request, res: Response) => {
-  const { query, userId } = req.body;
+  const { query } = req.body;
   try {
-    const result = await search(query, userId);
+    const result = await search(query);
     return res.json(result);
   } catch (unknownError) {
     let errorMessage: string | null = null;

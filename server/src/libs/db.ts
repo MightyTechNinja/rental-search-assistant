@@ -19,6 +19,7 @@ const {
   MONGODB_CONNECTION_URI = "",
   MONGODB_DATABASE_NAME,
   VECTOR_SEARCH_INDEX_NAME,
+  VECTOR_SEARCH_PATH,
   OPENAI_API_KEY,
   OPENAI_EMBEDDING_MODEL,
 } = process.env;
@@ -52,48 +53,33 @@ export async function deleteUrl(tableName: string, url: string) {
 //   return table;
 // }
 
-export async function search(query: string, table: string) {
-  // const db = await getConnection();
-  // const tbl = await db.openTable(table);
-
+export async function search(query: string) {
   console.time("embedding");
-  const query_embedding = await getEmbedding().embedQuery(query);
+  const queryEmbedding = await getEmbedding().embedQuery(query);
   console.timeEnd("embedding");
-  // console.log('query_embedding==', query_embedding);
-
-  // console.time("search");
-  // const results = await tbl
-  //   .vectorSearch(query_embedding)
-  //   .select(["title", "text", "url", "image"])
-  //   .distanceType("cosine")
-  //   .limit(10)
-  //   .toArray();
-  // console.timeEnd("search");
-  // return results;
 
   const collection = database.collection("embedded_content");
   const agg = [
     {
       $vectorSearch: {
-        index: "vector_index",
-        path: "embedding",
-        queryVector: query_embedding,
+        index: VECTOR_SEARCH_INDEX_NAME,
+        path: VECTOR_SEARCH_PATH,
+        queryVector: queryEmbedding,
         numCandidates: 150,
-        limit: 10,
+        limit: 5,
       },
     },
-    // {
-    //   $project: {
-    //     score: {
-    //       $meta: "vectorSearchScore",
-    //     },
-    //   },
-    // },
+    {
+      $project: {
+        embedding: 0,
+        score: {
+          $meta: "vectorSearchScore",
+        },
+      },
+    },
   ];
-  
-  const result = collection.aggregate(agg);
-  await result.forEach((doc) => console.dir(JSON.stringify(doc)));
-  
+
+  const result = collection.aggregate(agg).toArray();
   return result;
 }
 
