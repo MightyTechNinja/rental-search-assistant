@@ -19,7 +19,6 @@
   "dependencies": {
     "@langchain/openai": "^0.2.5",
     "@langchain/textsplitters": "^0.0.2",
-    "apache-arrow": "^17.0.0",
     "axios": "^1.7.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -29,8 +28,7 @@
     "helmet": "^7.1.0",
     "http-status-codes": "^2.3.0",
     "mongodb": "^6.8.0",
-    "pino-http": "^10.0.0",
-    "react-tweet": "^3.2.1"
+    "pino-http": "^10.0.0"
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",

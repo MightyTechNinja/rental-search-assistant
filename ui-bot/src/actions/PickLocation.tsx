@@ -9,7 +9,7 @@ import {
   Button,
   Title,
   Subtitle,
-  Reply
+  Reply,
 } from "@botonic/react";
 import { BACKEND_URL } from "../config";
 
@@ -29,7 +29,8 @@ export default class extends React.Component {
       }),
     });
     const resData = await res.json();
-    session.resp.properties = resData;
+    session.resp = resData;
+    console.log("resData=", resData);
   }
 
   render() {
@@ -40,7 +41,7 @@ export default class extends React.Component {
           {this.context.input.data}
         </Text>
         <Carousel>
-          {this.context.session.resp?.properties.map((property, i) => (
+          {this.context.session.resp?.map((property, i) => (
             <Element key={property.id}>
               <Title style="">{property.title}</Title>
               <Pic src={property.thumbnailUrl} />
@@ -49,7 +50,7 @@ export default class extends React.Component {
             </Element>
           ))}
         </Carousel>
-        <Reply payload='external-search'>External Search</Reply>
+        <Reply payload="external-search">External Search</Reply>
       </>
     );
   }

@@ -27,7 +27,7 @@ export default class extends React.Component {
       }),
     });
     const resData = await res.json();
-    session.resp.properties = resData;
+    session.resp = resData;
   }
 
   render() {
@@ -35,7 +35,7 @@ export default class extends React.Component {
       <>
         <Text>Here are some properties from external resources</Text>
         <Carousel>
-          {this.context.session.resp?.properties.map((property, i) => (
+          {this.context.session.resp?.map((property, i) => (
             <Element key={property.id}>
               <Title style="">{property.title}</Title>
               <Pic src={property.thumbnailUrl} />
