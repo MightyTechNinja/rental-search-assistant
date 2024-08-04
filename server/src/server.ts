@@ -8,7 +8,6 @@ import rateLimiter from "@/middleware/rateLimiter";
 import requestLogger from "@/middleware/requestLogger";
 import errorHandler from "@/middleware/errorHandler";
 import { searchRouter } from "@/api/vector/search";
-import { callbackRouter } from "@/api/vector/callback";
 import { embeddingRouter } from "@/api/vector/embedding";
 import { changeEmbeddingRouter } from "@/api/vector/changeEmbedding";
 import { indexingRouter } from "@/api/indexing";
@@ -33,7 +32,6 @@ app.use(requestLogger);
 
 // Routes
 app.use("/api/vector/search", searchRouter);
-app.use("/api/vector/callback", callbackRouter);
 app.use("/api/vector/embedding", embeddingRouter);
 app.use("/api/vector/change-embedding", changeEmbeddingRouter);
 app.use("/api/index/md", indexingRouter);
