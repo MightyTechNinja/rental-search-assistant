@@ -21,16 +21,30 @@ export const webchat: WebchatAppArgs = {
       image: Chatbot,
       style: {
         position: "relative",
-        display: "none"
+        display: "none",
       },
     },
     userInput: {
-      emojiPicker: true as any
-    }
+      emojiPicker: true as any,
+    },
+    replies: {
+      align: "center",
+      wrap: "nowrap",
+    },
+    reply: {
+      style: {
+        width: "fit-content",
+        background: "rgb(109 221 159)",
+        color: "auto",
+        border: "none",
+        "align-self": "center",
+        "margin-bottom": "12px",
+      },
+    },
   },
-  onInit: app => {
+  onInit: (app) => {
     // You can combine webchat listeners with the Webchat SDK's Api in order
     // to obtain extra functionalities. This will open automatically the webchat.
-    app.open()
+    app.open();
   },
 };

@@ -12,7 +12,7 @@ export default class extends React.Component {
     return (
       <>
         {this.props.rate && <RateUserMessage rate={this.props.rate} />}
-        <Text>Thanks for contacting us. Have a nice day!</Text>
+        <Text>Thanks for using us. Have a nice day!</Text>
       </>
     );
   }

@@ -14,7 +14,6 @@ import { BACKEND_URL } from "../config";
 export default class extends React.Component {
   static contextType = RequestContext;
   static async botonicInit({ input, session, params, lastRoutePath }) {
-    console.log("input.data=====", input.data);
     const url = BACKEND_URL + "/api/vector/search";
 
     const res = await fetch(url, {
@@ -28,20 +27,20 @@ export default class extends React.Component {
       }),
     });
     const resData = await res.json();
-    console.log("res=", resData);
-    session.resp = resData;
+    session.resp.properties = resData;
   }
-  render(this) {
+
+  render() {
     return (
       <>
-        <Text>Select a property among these options:</Text>
+        <Text>Here are some properties from external resources</Text>
         <Carousel>
-          {this.context.session.resp.map((property, i) => (
+          {this.context.session.resp?.properties.map((property, i) => (
             <Element key={property.id}>
               <Title style="">{property.title}</Title>
               <Pic src={property.thumbnailUrl} />
               <Subtitle style="">{property.description}</Subtitle>
-              <Button url={property.thumbnailUrl}>Go Property</Button>
+              <Button url={property.thumbnailUrl}>View</Button>
             </Element>
           ))}
         </Carousel>

@@ -12,13 +12,12 @@ export default class extends React.Component {
     return (
       <>
         <Text>
-          Hi 🙂, I'm your virtual assistant of Resortifi Platform. I will
-          help you manage your property reservations and much more.
+          Hi 🙂, I'm your virtual assistant of Resortifi Platform. I will help you select anything you are looking for.
         </Text>
         <Text>
-          Select Properties:
-          <Button payload="carousel">By Location</Button>
-          <Button payload="carousel">By Availability</Button>
+          Select Properties
+          <Button payload="specific-location">By Specific Location</Button>
+          <Button payload="near-me">Near Me</Button>
           {/* <Button webview={CheckReservationsWebview}>
             Check your reservations
           </Button> */}

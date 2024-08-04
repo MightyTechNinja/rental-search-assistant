@@ -5,9 +5,9 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import DateFnsUtils from "@date-io/date-fns";
 import deLocale from "date-fns/locale/en-US";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import { MyTextField } from "../utils";
 
 const Form = styled.div`

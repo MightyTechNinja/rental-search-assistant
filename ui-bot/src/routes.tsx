@@ -1,19 +1,43 @@
 import React from "react";
 import { Route, Text, Reply } from "@botonic/react";
-import Start from "./actions/Start";
-import NotFound from "./actions/NotFound";
-import BookRestaurant from "./actions/BookRestaurant";
-import Carousel from "./actions/Carousel";
 import BookHotel from "./actions/BookHotel";
-import InfoReservation from "./actions/InfoReservation";
-import CloseWebview from "./actions/CloseWebview";
+import BookRestaurant from "./actions/BookRestaurant";
 import Bye from "./actions/Bye";
+import CloseWebview from "./actions/CloseWebview";
+import ExternalSearch from "./actions/ExternalSearch";
+import InfoReservation from "./actions/InfoReservation";
 import MoreHelp from "./actions/MoreHelp";
+import NearMe from "./actions/NearMe";
+import NotFound from "./actions/NotFound";
+import PickLocation from "./actions/PickLocation";
+import SpecificLocation from "./actions/SpecificLocation";
+import Start from "./actions/Start";
 
 export const routes: Route[] = [
-  { path: "/", text: /^hi$/i, action: Start },
+  { path: "/", text: /^(hi|hello|hey|good morning|)$/i, action: Start },
+  {
+    path: "specific-location",
+    payload: "specific-location",
+    action: SpecificLocation,
+    childRoutes: [
+      {
+        path: "pick-location",
+        payload: "pick-location",
+        action: PickLocation,
+      },
+    ],
+  },
+  {
+    path: "near-me",
+    payload: "near-me",
+    action: NearMe,
+  },
+  {
+    path: "external-search",
+    payload: "external-search",
+    action: ExternalSearch,
+  },
 
-  // intent
   {
     path: "not-found",
     input: (i) => i.intents && i.intents[0].confidence < 0.7,
@@ -21,7 +45,6 @@ export const routes: Route[] = [
   },
   { path: "book-restaurant", intent: "BookRestaurant", action: BookRestaurant },
 
-  // booking  
   {
     path: "book-hotel",
     payload: /hotel-.*/,
@@ -38,23 +61,17 @@ export const routes: Route[] = [
     action: CloseWebview,
   },
   {
-    path: "carousel",
-    payload: "carousel",
-    text: /^.*\b(hotel|book)\b.*$/i,
-    action: Carousel,
-  },
-  {
     path: "Bye",
     payload: /rating-.*/,
-    text: /^bye$/i,
+    text: /^(bye|good bye|)$/i,
     action: Bye,
   },
-  {
-    path: "help",
-    text: /.*/,
-    payload: /help-.*/,
-    action: MoreHelp,
-  },
+  // {
+  //   path: "help",
+  //   text: /.*/,
+  //   payload: /help-.*/,
+  //   action: MoreHelp,
+  // },
 ];
 
 // export const routses: Route[] = [
