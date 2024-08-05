@@ -75,20 +75,14 @@ export const search = async (query: string): Promise<HybridSearchResult> => {
   }
 
   let fullAnswer = "";
-  console.time("llmanswer");
   await getLLMAnswer(query, webs, (msg: any) => {
     fullAnswer += msg;
   });
-  console.timeEnd("llmanswer");
-  console.log('full answer=', fullAnswer);
 
   let fullRelated = "";
-  console.time("relatedquestion");
   await getRelatedQuestions(query, webs, (msg: any) => {
     fullRelated += msg;
   });
-  console.timeEnd("relatedquestion");
-  console.log('full related=', fullRelated);
 
   return {
     question: query,

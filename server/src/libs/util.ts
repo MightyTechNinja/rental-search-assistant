@@ -1,8 +1,12 @@
-import { type EmbeddingsInterface } from "@langchain/core/embeddings";
-import { OpenAIEmbeddings } from "@langchain/openai";
+import dotenv from "dotenv";
+import { resolve } from "path";
 import OpenAI from "openai";
 import util from "util";
+import { type EmbeddingsInterface } from "@langchain/core/embeddings";
+import { OpenAIEmbeddings } from "@langchain/openai";
 import { WebSource, StreamHandler } from "./types";
+
+dotenv.config({ path: resolve(`${__dirname}/../../.env`) });
 
 const {
   OPENAI_API_KEY,
@@ -81,7 +85,6 @@ async function chatStream(
   if (!OPENAI_API_KEY) {
     return;
   }
-console.log('openaiapikey in cahtstream=', OPENAI_API_KEY)
   const openai = new OpenAI({
     apiKey: OPENAI_API_KEY,
   });
