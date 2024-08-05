@@ -1,12 +1,11 @@
 import { type EmbeddingsInterface } from "@langchain/core/embeddings";
 import { OpenAIEmbeddings } from "@langchain/openai";
-// import { DIMENSIONS, EMBEDDING_MODEL } from "../config";
-import { EMBEDDING_MODEL } from "../config";
+
+const { OPENAI_API_KEY, OPENAI_EMBEDDING_MODEL } = process.env;
 
 export function getEmbedding(): EmbeddingsInterface {
   return new OpenAIEmbeddings({
-    apiKey: process.env.OPENAI_API_KEY,
-    model: EMBEDDING_MODEL,
-    // dimensions: DIMENSIONS,
+    apiKey: OPENAI_API_KEY,
+    model: OPENAI_EMBEDDING_MODEL,
   });
 }

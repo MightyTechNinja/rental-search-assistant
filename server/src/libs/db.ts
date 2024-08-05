@@ -6,14 +6,11 @@ import { getEmbedding } from "./util";
 dotenv.config({ path: resolve(`${__dirname}/../../.env`) });
 
 const {
-  API_TOKEN,
   MONGODB_CONNECTION_URI = "",
   MONGODB_DATABASE_NAME,
   MONGODB_EMBEDDED_COLLECTION_NAME = "",
   VECTOR_SEARCH_INDEX_NAME,
   VECTOR_SEARCH_PATH,
-  OPENAI_API_KEY,
-  OPENAI_EMBEDDING_MODEL,
 } = process.env;
 
 const client = new MongoClient(MONGODB_CONNECTION_URI);
