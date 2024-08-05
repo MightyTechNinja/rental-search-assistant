@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import {
   RequestContext,
   Text,
@@ -10,6 +11,11 @@ import {
   Subtitle,
 } from "@botonic/react";
 import { BACKEND_URL } from "../config";
+
+const AnswerBox = styled.div`
+  margin-left: 36px;
+  text-wrap: initial;
+`;
 
 export default class extends React.Component {
   static contextType = RequestContext;
@@ -34,30 +40,36 @@ export default class extends React.Component {
     return (
       <>
         <Text>Here are some external resources related to your query</Text>
-        {this.context.session.resp?.images && (
+        {this.context.session.resp?.images?.length > 0 && (
           <Carousel>
             {this.context.session.resp.images.map((image, i) => (
               <Element key={i}>
                 <Title style="">{image.title}</Title>
                 <Pic src={image.image} />
-                {/* <Subtitle style="">{property.description}</Subtitle> */}
                 <Button url={image.url}>View</Button>
               </Element>
             ))}
           </Carousel>
         )}
-        {this.context.session.resp?.webs && (
+        {this.context.session.resp?.webs?.length > 0 && (
           <Carousel>
             {this.context.session.resp.webs.map((web, i) => (
               <Element key={i}>
                 <Title style="">{web.title}</Title>
-                {/* <Pic src={image.image} /> */}
                 <Subtitle style="">{web.content}</Subtitle>
                 <Button url={web.url}>View</Button>
               </Element>
             ))}
           </Carousel>
         )}
+        {this.context.session.resp?.answer && (
+          <AnswerBox>
+            <Title style="">{this.context.session.resp.answer}</Title>
+          </AnswerBox>
+        )}
+        {/* {this.context.session.resp?.related && (
+          <Subtitle style="">{this.context.session.resp.related}</Subtitle>
+        )} */}
       </>
     );
   }
