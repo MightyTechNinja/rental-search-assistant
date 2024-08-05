@@ -9,6 +9,7 @@ import requestLogger from "@/middleware/requestLogger";
 import errorHandler from "@/middleware/errorHandler";
 import { searchRouter } from "@/api/vector/search";
 import { embeddingRouter } from "@/api/vector/embedding";
+import { externalSearchRouter } from "@/api/external-search";
 import { CORS_ORIGIN } from "./config";
 
 const logger = pino({ name: "server start" });
@@ -31,6 +32,7 @@ app.use(requestLogger);
 // Routes
 app.use("/api/vector/search", searchRouter);
 app.use("/api/vector/embedding", embeddingRouter);
+app.use("/api/external-search", externalSearchRouter);
 
 // Error handlers
 app.use(errorHandler());

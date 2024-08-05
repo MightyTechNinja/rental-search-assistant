@@ -22,28 +22,33 @@ export async function search(query: string) {
   const queryEmbedding = await getEmbedding().embedQuery(query);
   console.timeEnd("embedding");
 
-  const agg = [
-    {
-      $vectorSearch: {
-        index: VECTOR_SEARCH_INDEX_NAME,
-        path: VECTOR_SEARCH_PATH,
-        queryVector: queryEmbedding,
-        numCandidates: 150,
-        limit: 5,
-      },
-    },
-    {
-      $project: {
-        embedding: 0,
-        score: {
-          $meta: "vectorSearchScore",
+  try {
+    const agg = [
+      {
+        $vectorSearch: {
+          index: VECTOR_SEARCH_INDEX_NAME,
+          path: VECTOR_SEARCH_PATH,
+          queryVector: queryEmbedding,
+          numCandidates: 150,
+          limit: 5,
         },
       },
-    },
-  ];
+      {
+        $project: {
+          embedding: 0,
+          score: {
+            $meta: "vectorSearchScore",
+          },
+        },
+      },
+    ];
 
-  const result = collection.aggregate(agg).toArray();
-  return result;
+    const result = collection.aggregate(agg).toArray();
+    return result;
+  } catch (error) {
+    console.log("Error in vector search");
+    return [];
+  }
 }
 
 export async function addEmbedding(property: any) {

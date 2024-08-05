@@ -10,7 +10,7 @@ import {
   Subtitle,
   Reply,
 } from "@botonic/react";
-import { BACKEND_URL } from "../config";
+import { BACKEND_URL, API_VECTOR_TOKEN } from "../config";
 
 export default class extends React.Component {
   static contextType = RequestContext;
@@ -20,7 +20,7 @@ export default class extends React.Component {
     const res = await fetch(url, {
       method: "POST",
       headers: {
-        Authorization: process.env.VECTOR_API_TOKEN!,
+        Authorization: API_VECTOR_TOKEN,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

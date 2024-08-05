@@ -5,6 +5,7 @@ import BookRestaurant from "./actions/BookRestaurant";
 import Bye from "./actions/Bye";
 import CloseWebview from "./actions/CloseWebview";
 import ExternalSearch from "./actions/ExternalSearch";
+import Greetings from "./actions/Greetings";
 import InfoReservation from "./actions/InfoReservation";
 import MoreHelp from "./actions/MoreHelp";
 import NearMe from "./actions/NearMe";
@@ -13,8 +14,11 @@ import PickLocation from "./actions/PickLocation";
 import SpecificLocation from "./actions/SpecificLocation";
 import Start from "./actions/Start";
 
+const withConfidence = (input, intent) =>
+  input.intents.some((int) => int.label === intent && int.confidence >= 0.4);
+
 export const routes: Route[] = [
-  { path: "/", text: /^(hi|hello|hey|good morning|)$/i, action: Start },
+  { path: "/", text: /^hi$/i, action: Start },
   {
     path: "specific-location",
     payload: "specific-location",
@@ -38,6 +42,16 @@ export const routes: Route[] = [
     action: ExternalSearch,
   },
 
+  {
+    path: "greetings",
+    input: (i) => withConfidence(i, "Greetings"),
+    action: Greetings,
+  },
+  // {
+  //   path: "greetings",
+  //   intent: "Greetings",
+  //   action: Greetings,
+  // },
   {
     path: "not-found",
     input: (i) => i.intents && i.intents[0].confidence < 0.7,
@@ -73,21 +87,3 @@ export const routes: Route[] = [
   //   action: MoreHelp,
   // },
 ];
-
-// export const routses: Route[] = [
-//   {
-//     path: "initial",
-//     text: /hi/i,
-//     // intent: 'Greetings',
-//     action: () => (
-//       <>
-//         <Text>Hello! Nice to meet you ;)</Text>
-//         <Text>
-//           How can I help you?
-//           <Reply payload="search">Search properties</Reply>
-//           {/* <Reply payload="track">Track my order</Reply> */}
-//         </Text>
-//       </>
-//     ),
-//   },
-// ];

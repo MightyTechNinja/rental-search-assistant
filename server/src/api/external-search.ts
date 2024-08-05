@@ -1,9 +1,9 @@
 import express, { type Router, Request, Response } from "express";
-import { search } from "../../libs/db";
+import { search } from "../libs/serper";
 
-export const searchRouter: Router = express.Router();
+export const externalSearchRouter: Router = express.Router();
 
-searchRouter.post("/", async (req: Request, res: Response) => {
+externalSearchRouter.post("/", async (req: Request, res: Response) => {
   const { query } = req.body;
   try {
     const result = await search(query);
